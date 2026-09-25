@@ -55,7 +55,10 @@ RUN set -eu; \
 
 COPY config/zshrc /root/.zshrc
 COPY config/tmux.conf.local /root/.tmux.conf.local
+COPY config/bashrc-zsh /root/.bashrc-zsh
 COPY pins.json /opt/custom-image-pins.json
+
+RUN printf '\n# Load the RunPod interactive-shell bridge.\nsource /root/.bashrc-zsh\n' >> /root/.bashrc
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     python3 - <<'PY'

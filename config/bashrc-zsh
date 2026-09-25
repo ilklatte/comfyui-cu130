@@ -1,0 +1,9 @@
+# RunPod terminals can start Bash even when root's login shell and $SHELL are
+# Zsh. Switch only real interactive terminals; scripts and CI remain in Bash.
+case $- in
+  *i*)
+    if [ -t 0 ] && [ -x /usr/bin/zsh ] && [ -z "${ZSH_VERSION:-}" ]; then
+      exec /usr/bin/zsh -l
+    fi
+    ;;
+esac
