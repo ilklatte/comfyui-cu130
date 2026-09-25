@@ -10,6 +10,7 @@ Custom RunPod image based on
 - Zsh as root's login shell, Oh My Zsh, autosuggestions and syntax highlighting
 - tmux, Oh My Tmux, TPM, resurrect, continuum, neovim and autojump
 - 13 pinned general-purpose ComfyUI custom-node packs listed in `pins.json`
+- Blue display for world-writable and sticky world-writable directories via `LS_COLORS`
 
 ComfyUI keeps the upstream persistent layout at
 `/workspace/runpod-slim/ComfyUI`. Tmux resurrect data is intentionally local to

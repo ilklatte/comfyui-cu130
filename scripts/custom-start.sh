@@ -5,6 +5,11 @@ BAKED_COMFYUI_DIR=/opt/comfyui-baked
 WORKSPACE_COMFYUI_DIR=/workspace/runpod-slim/ComfyUI
 PINS_FILE=/opt/custom-image-pins.json
 
+case ":${LS_COLORS:-}:" in
+    *:ow=01\;34:tw=01\;34:*) ;;
+    *) export LS_COLORS="${LS_COLORS:+${LS_COLORS}:}ow=01;34:tw=01;34" ;;
+esac
+
 # The upstream entrypoint handles a new volume. For an existing installation,
 # refresh only the node directories explicitly owned by this derived image.
 if [ -d "$WORKSPACE_COMFYUI_DIR" ]; then
