@@ -5,7 +5,7 @@ import re
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 EXPECTED_BASE = "runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0"
-EXPECTED_IMAGE = "coohh88/runpod-comfyui-cu130"
+EXPECTED_IMAGE = "coohh88/runpod-comfyui-cu128"
 
 pins = json.loads((ROOT / "pins.json").read_text())
 dockerfile = (ROOT / "Dockerfile").read_text()
@@ -28,4 +28,6 @@ assert "@resurrect-dir '/root/.tmux/resurrect'" in tmux
 assert "/workspace/.tmux" not in tmux
 assert "pipeline.git.tag matches /^v[1-9][0-9]*$/" in circleci
 assert "--platform linux/amd64" in circleci
+assert 'IMAGE_TAG="cu130-${CIRCLE_TAG}"' in circleci
+assert 'ROLLING_TAG="cu130-latest"' in circleci
 print("validation passed")

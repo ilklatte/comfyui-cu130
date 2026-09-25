@@ -27,17 +27,18 @@ jobs:
           name: Validate release configuration
           command: |
             [[ "${CIRCLE_TAG:-}" =~ ^v[1-9][0-9]*$ ]] || { echo 'Release tag must be vN, for example v1'; exit 2; }
-            export DOCKER_IMAGE="${DOCKER_IMAGE:-coohh88/runpod-comfyui-cu130}"
-            export TEMPLATE_REPOSITORY_URL="${TEMPLATE_REPOSITORY_URL:-https://github.com/ilklatte/comfyui-cu130.git}"
-            for name in DOCKER_IMAGE TEMPLATE_REPOSITORY_URL DOCKERHUB_USERNAME DOCKERHUB_TOKEN; do
+            for name in DOCKERHUB_USERNAME DOCKERHUB_TOKEN; do
               test -n "${!name:-}" || { echo "$name is required"; exit 2; }
             done
             base_image="$(python3 -c "import json; print(json.load(open('pins.json'))['base_image'])")"
-            expected_image="$(python3 -c "import json; print(json.load(open('pins.json'))['docker_image'])")"
-            test "$DOCKER_IMAGE" = "$expected_image" || { echo "DOCKER_IMAGE must be $expected_image"; exit 2; }
+            docker_image="$(python3 -c "import json; print(json.load(open('pins.json'))['docker_image'])")"
+            IMAGE_TAG="cu130-${CIRCLE_TAG}"
+            ROLLING_TAG="cu130-latest"
             {
               echo "export BASE_IMAGE='$base_image'"
-              echo "export DOCKER_IMAGE='$DOCKER_IMAGE'"
+              echo "export DOCKER_IMAGE='$docker_image'"
+              echo "export IMAGE_TAG='$IMAGE_TAG'"
+              echo "export ROLLING_TAG='$ROLLING_TAG'"
             } >> "$BASH_ENV"
       - run:
           name: Log in to Docker Hub
@@ -51,15 +52,15 @@ jobs:
               --platform linux/amd64 \
               --progress=plain \
               --build-arg "BASE_IMAGE=$BASE_IMAGE" \
-              --tag "$DOCKER_IMAGE:$CIRCLE_TAG" \
-              --tag "$DOCKER_IMAGE:latest" \
+              --tag "$DOCKER_IMAGE:$IMAGE_TAG" \
+              --tag "$DOCKER_IMAGE:$ROLLING_TAG" \
               .
       - run:
           name: Push immutable and rolling tags
           no_output_timeout: 30m
           command: |
-            docker push "$DOCKER_IMAGE:$CIRCLE_TAG"
-            docker push "$DOCKER_IMAGE:latest"
+            docker push "$DOCKER_IMAGE:$IMAGE_TAG"
+            docker push "$DOCKER_IMAGE:$ROLLING_TAG"
 
 workflows:
   verify-and-publish:

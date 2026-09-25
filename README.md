@@ -2,7 +2,7 @@
 
 Custom RunPod image based on
 `runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0`. The published repository is
-`coohh88/runpod-comfyui-cu130`.
+`coohh88/runpod-comfyui-cu128` under CUDA-specific tags.
 
 ## Included environment
 
@@ -22,14 +22,13 @@ variables:
 
 | Variable | Value |
 | --- | --- |
-| `DOCKER_IMAGE` | `coohh88/runpod-comfyui-cu130` |
-| `TEMPLATE_REPOSITORY_URL` | `https://github.com/ilklatte/comfyui-cu130.git` |
 | `DOCKERHUB_USERNAME` | Docker Hub account name |
 | `DOCKERHUB_TOKEN` | Docker Hub token with Read & Write permission |
 
 Commits on `main` only run validation. Publishing happens only when a tag that
-matches `vN` is pushed. For example, pushing `v1` publishes both `v1` and
-`latest`. No RunPod template is updated by this pipeline.
+matches `vN` is pushed. For example, pushing `v2` publishes both `cu130-v2`
+and `cu130-latest`. The Docker repository is read from `pins.json`; no
+`DOCKER_IMAGE` CircleCI variable is needed. No RunPod template is updated.
 
 ## Local validation
 
