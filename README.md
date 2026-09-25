@@ -2,7 +2,7 @@
 
 Custom RunPod image based on
 `runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0`. The published repository is
-`coohh88/runpod-comfyui-cu128` under CUDA-specific tags.
+`coohh88/runpod-comfyui` under CUDA-specific tags.
 
 ## Included environment
 

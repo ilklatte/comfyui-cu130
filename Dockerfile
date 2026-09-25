@@ -99,7 +99,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python3 -m pip install --no-build-isolation cupy-cuda13x; \
     python3 -m pip check; \
     python3 -c "import torch; assert torch.version.cuda and torch.version.cuda.startswith('13.'), torch.version.cuda"; \
-    printf '\nCUSTOM_IMAGE=coohh88/runpod-comfyui-cu128:cu130\n' >> /opt/comfyui-baked/.runpod-bundle-version; \
+    printf '\nCUSTOM_IMAGE=coohh88/runpod-comfyui:cu130\n' >> /opt/comfyui-baked/.runpod-bundle-version; \
     rm -rf /tmp/custom-nodes
 
 COPY scripts/custom-start.sh /usr/local/bin/custom-start.sh
