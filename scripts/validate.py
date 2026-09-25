@@ -21,6 +21,7 @@ assert f"ARG BASE_IMAGE={EXPECTED_BASE}" in dockerfile
 assert "pip install --no-build-isolation cupy-cuda13x;" in dockerfile
 assert "pip install --no-build-isolation cupy-cuda12x;" not in dockerfile
 assert "PIP_CONSTRAINT=/opt/comfyui-runtime-constraints.txt" in dockerfile
+assert "neovim p7zip-full rsync tmux unzip zip zsh" in dockerfile
 assert "LC_ALL=zh_CN.UTF-8" in dockerfile
 assert "ENTRYPOINT [\"/usr/local/bin/custom-start.sh\"]" in dockerfile
 assert "set -g prefix C-b" in tmux and "set -g mouse on" in tmux
