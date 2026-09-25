@@ -25,6 +25,7 @@ assert "LC_ALL=zh_CN.UTF-8" in dockerfile
 assert "ENTRYPOINT [\"/usr/local/bin/custom-start.sh\"]" in dockerfile
 assert "set -g prefix C-b" in tmux and "set -g mouse on" in tmux
 assert "@resurrect-dir '/root/.tmux/resurrect'" in tmux
+assert "@continuum-restore 'off'" in tmux
 assert "/workspace/.tmux" not in tmux
 assert 'ow=01;34:tw=01;34' in (ROOT / "config/zshrc").read_text()
 assert 'ow=01;34:tw=01;34' in (ROOT / "scripts/custom-start.sh").read_text()

@@ -8,7 +8,9 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 
 # Session state is intentionally ephemeral and never written to /workspace.
 set -g @resurrect-dir '/root/.tmux/resurrect'
-set -g @continuum-restore 'on'
+# Pod-local sessions start clean; do not restore a file that cannot exist on a
+# fresh pod. Manual resurrect save/restore remains available when needed.
+set -g @continuum-restore 'off'
 set -g @continuum-save-interval '15'
 
 set -gu prefix2
