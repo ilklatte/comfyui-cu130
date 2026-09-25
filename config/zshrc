@@ -7,6 +7,22 @@ source "$ZSH/oh-my-zsh.sh"
 # Ubuntu's autojump package owns this integration file.
 [[ -s /usr/share/autojump/autojump.zsh ]] && source /usr/share/autojump/autojump.zsh
 
+# Enter the persistent ComfyUI environment for SSH, Jupyter and RunPod
+# terminals. Prefer a CUDA-specific name, while retaining upstream/legacy
+# fallbacks. Do nothing when the caller already activated another venv.
+if [[ -z "${VIRTUAL_ENV:-}" ]]; then
+  for _runpod_venv in \
+    /workspace/runpod-slim/ComfyUI/.venv-cu130 \
+    /workspace/runpod-slim/ComfyUI/.venv-cu128 \
+    /workspace/runpod-slim/ComfyUI/.venv; do
+    if [[ -f "$_runpod_venv/bin/activate" ]]; then
+      source "$_runpod_venv/bin/activate"
+      break
+    fi
+  done
+  unset _runpod_venv
+fi
+
 export LANG=zh_CN.UTF-8
 export LC_ALL=zh_CN.UTF-8
 export LANGUAGE=zh_CN:zh

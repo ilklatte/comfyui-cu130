@@ -31,6 +31,9 @@ assert "/workspace/.tmux" not in tmux
 zshrc = (ROOT / "config/zshrc").read_text()
 assert 'ow=01\\;34 tw=01\\;34' in zshrc
 assert "zstyle ':completion:*' list-colors" in zshrc
+assert "/workspace/runpod-slim/ComfyUI/.venv-cu130" in zshrc
+assert "/workspace/runpod-slim/ComfyUI/.venv-cu128" in zshrc
+assert 'source "$_runpod_venv/bin/activate"' in zshrc
 start_script = (ROOT / "scripts/custom-start.sh").read_text()
 assert 'ow=01;34:tw=01;34' in start_script
 assert 'FILEBROWSER_PASSWORD' in start_script

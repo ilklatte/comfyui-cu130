@@ -9,6 +9,7 @@ Custom RunPod image based on
 - Chinese UTF-8 locale (`zh_CN.UTF-8`)
 - Zsh as root's login shell, Oh My Zsh, autosuggestions and syntax highlighting
 - Automatic Zsh login for interactive Bash terminals opened by RunPod or Jupyter
+- Automatic activation of the persistent ComfyUI venv in interactive terminals
 - tmux, Oh My Tmux, TPM, resurrect, continuum, neovim and autojump
 - zip, unzip and p7zip (`7z`)
 - 13 pinned general-purpose ComfyUI custom-node packs listed in `pins.json`
