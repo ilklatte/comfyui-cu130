@@ -1,0 +1,19 @@
+{
+  "base_image": "runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0",
+  "docker_image": "coohh88/runpod-comfyui-cu130",
+  "custom_nodes": [
+    {"directory": "rgthree-comfy", "repository": "https://github.com/rgthree/rgthree-comfy.git", "commit": "2c5342a8cb0eaecaabf61435a5f37dd594c510ba"},
+    {"directory": "ComfyUI-KJNodes", "repository": "https://github.com/kijai/ComfyUI-KJNodes.git", "commit": "d3cfe21625e5170126ce06fbfcfe1d88108688c3"},
+    {"directory": "ComfyUI-Impact-Pack", "repository": "https://github.com/ltdrdata/ComfyUI-Impact-Pack.git", "commit": "429d0159ad429e64d2b3916e6e7be9c22d025c3c"},
+    {"directory": "ComfyUI-VideoHelperSuite", "repository": "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git", "commit": "4d907bee61e92c2e65af3bd6383a4e4d356126d1"},
+    {"directory": "ComfyUI-Easy-Use", "repository": "https://github.com/yolain/ComfyUI-Easy-Use.git", "commit": "8730ffd14044ee9392db3b192646266576bc67df"},
+    {"directory": "comfyui_controlnet_aux", "repository": "https://github.com/Fannovel16/comfyui_controlnet_aux.git", "commit": "59b1fc411ede8623b2997855b8018f0b3b6cf49f"},
+    {"directory": "ComfyUI-Custom-Scripts", "repository": "https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git", "commit": "609f3afaa74b2f88ef9ce8d939626065e3247469"},
+    {"directory": "ComfyUI_essentials", "repository": "https://github.com/cubiq/ComfyUI_essentials.git", "commit": "9d9f4bedfc9f0321c19faf71855e228c93bd0dc9"},
+    {"directory": "ComfyUI_LayerStyle", "repository": "https://github.com/chflame163/ComfyUI_LayerStyle.git", "commit": "a3459a7638c4c2839878089c105c73af0eb2edd2"},
+    {"directory": "ComfyUI-Frame-Interpolation", "repository": "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git", "commit": "26545cc2dd95bc3d27f056016300673bdeee78f5"},
+    {"directory": "ComfyUI-GGUF", "repository": "https://github.com/city96/ComfyUI-GGUF.git", "commit": "6ea2651e7df66d7585f6ffee804b20e92fb38b8a"},
+    {"directory": "ComfyUI-segment-anything-2", "repository": "https://github.com/kijai/ComfyUI-segment-anything-2.git", "commit": "0c35fff5f382803e2310103357b5e985f5437f32"},
+    {"directory": "was-node-suite-comfyui", "repository": "https://github.com/WASasquatch/was-node-suite-comfyui.git", "commit": "9934caa92dd0ddbb533cdfd5645e08c43ec629af"}
+  ]
+}

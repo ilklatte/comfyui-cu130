@@ -1,0 +1,27 @@
+tmux_conf_update_plugins_on_launch=false
+tmux_conf_update_plugins_on_reload=false
+tmux_conf_uninstall_plugins_on_reload=false
+
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+# Session state is intentionally ephemeral and never written to /workspace.
+set -g @resurrect-dir '/root/.tmux/resurrect'
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '15'
+
+set -gu prefix2
+unbind C-a
+unbind C-b
+set -g prefix C-b
+bind C-b send-prefix
+set -g mouse on
+set -g history-limit 100000
+
+set -g automatic-rename on
+set -g automatic-rename-format '#{pane_current_command}'
+set -g status-left-length 80
+set -g status-left '#[bold]#H | #S:#I.#P #[default]'
+set -g window-status-format ' #I:#W '
+set -g window-status-current-format '#[bold,reverse] #I:#W #[default]'
