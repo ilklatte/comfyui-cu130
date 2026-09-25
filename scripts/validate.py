@@ -28,7 +28,11 @@ assert "@resurrect-dir '/root/.tmux/resurrect'" in tmux
 assert "@continuum-restore 'off'" in tmux
 assert "/workspace/.tmux" not in tmux
 assert 'ow=01;34:tw=01;34' in (ROOT / "config/zshrc").read_text()
-assert 'ow=01;34:tw=01;34' in (ROOT / "scripts/custom-start.sh").read_text()
+start_script = (ROOT / "scripts/custom-start.sh").read_text()
+assert 'ow=01;34:tw=01;34' in start_script
+assert 'FILEBROWSER_PASSWORD' in start_script
+assert 'users update admin' in start_script
+assert '--database "$FILEBROWSER_DB"' in start_script
 bash_bridge = (ROOT / "config/bashrc-zsh").read_text()
 assert 'case $-' in bash_bridge and 'exec /usr/bin/zsh -l' in bash_bridge
 assert 'source /root/.bashrc-zsh' in dockerfile

@@ -16,6 +16,8 @@ Custom RunPod image based on
 ComfyUI keeps the upstream persistent layout at
 `/workspace/runpod-slim/ComfyUI`. Tmux resurrect data is intentionally local to
 the container at `/root/.tmux/resurrect` and is not persisted in `/workspace`.
+When `FILEBROWSER_PASSWORD` is set, every pod start also synchronizes that
+value to the existing `/workspace/runpod-slim/filebrowser.db` admin account.
 
 ## CircleCI setup
 
