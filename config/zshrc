@@ -11,7 +11,13 @@ export LANG=zh_CN.UTF-8
 export LC_ALL=zh_CN.UTF-8
 export LANGUAGE=zh_CN:zh
 export TERM=xterm-256color
-case ":${LS_COLORS:-}:" in
-  *:ow=01\;34:tw=01\;34:*) ;;
-  *) export LS_COLORS="${LS_COLORS:+${LS_COLORS}:}ow=01;34:tw=01;34" ;;
-esac
+# Replace Ubuntu's green-background rules instead of appending duplicates, then
+# explicitly refresh Zsh's completion palette from the resulting LS_COLORS.
+typeset -a _runpod_ls_colors
+_runpod_ls_colors=(${(s.:.)LS_COLORS})
+_runpod_ls_colors=(${_runpod_ls_colors:#ow=*})
+_runpod_ls_colors=(${_runpod_ls_colors:#tw=*})
+_runpod_ls_colors+=(ow=01\;34 tw=01\;34)
+export LS_COLORS="${(j.:.)_runpod_ls_colors}"
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+unset _runpod_ls_colors

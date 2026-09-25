@@ -12,7 +12,7 @@ Custom RunPod image based on
 - tmux, Oh My Tmux, TPM, resurrect, continuum, neovim and autojump
 - zip, unzip and p7zip (`7z`)
 - 13 pinned general-purpose ComfyUI custom-node packs listed in `pins.json`
-- Blue display for world-writable and sticky world-writable directories via `LS_COLORS`
+- Blue display for world-writable and sticky world-writable directories in both `ls` and Zsh completion
 
 ComfyUI keeps the upstream persistent layout at
 `/workspace/runpod-slim/ComfyUI`. Tmux resurrect data is intentionally local to
