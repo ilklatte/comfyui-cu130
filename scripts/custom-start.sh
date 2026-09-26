@@ -13,11 +13,35 @@ esac
 
 # The upstream image uses FILEBROWSER_PASSWORD only when it creates the
 # database. Keep an existing network-volume database in sync without exposing
-# the password in logs. If the variable is absent, preserve the current login.
+# the password in logs. A contended bbolt lock must never prevent the rest
+# of the Pod (ComfyUI, SSH and Jupyter) from starting.
 if [ -f "$FILEBROWSER_DB" ] && [ -n "${FILEBROWSER_PASSWORD:-}" ]; then
     echo "Updating the existing FileBrowser admin password from FILEBROWSER_PASSWORD."
-    filebrowser --database "$FILEBROWSER_DB" users update admin \
-        --password "$FILEBROWSER_PASSWORD" --perm.admin
+    filebrowser_password_updated=false
+    for attempt in 1 2 3; do
+        if filebrowser_output="$(
+            filebrowser --database "$FILEBROWSER_DB" users update admin \
+                --password "$FILEBROWSER_PASSWORD" --perm.admin 2>&1
+        )"; then
+            filebrowser_password_updated=true
+            echo "FileBrowser admin password updated."
+            break
+        fi
+
+        if grep -q 'timeout' <<<"$filebrowser_output" && [ "$attempt" -lt 3 ]; then
+            echo "FileBrowser database is locked; retrying password update ($attempt/3)."
+            sleep 1
+            continue
+        fi
+
+        echo "Warning: unable to update the FileBrowser admin password; continuing Pod startup." >&2
+        printf '%s\n' "$filebrowser_output" >&2
+        break
+    done
+
+    if [ "$filebrowser_password_updated" = false ]; then
+        echo "Warning: FileBrowser will keep the password stored in its existing database." >&2
+    fi
 fi
 
 # The upstream entrypoint handles a new volume. For an existing installation,

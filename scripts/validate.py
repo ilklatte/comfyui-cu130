@@ -51,6 +51,9 @@ assert 'ow=01;34:tw=01;34' in start_script
 assert 'FILEBROWSER_PASSWORD' in start_script
 assert 'users update admin' in start_script
 assert '--database "$FILEBROWSER_DB"' in start_script
+assert 'for attempt in 1 2 3' in start_script
+assert 'continuing Pod startup' in start_script
+assert 'if filebrowser_output="$(' in start_script
 bash_bridge = (ROOT / "config/bashrc-zsh").read_text()
 assert 'case $-' in bash_bridge and 'exec /usr/bin/zsh -l' in bash_bridge
 assert 'source /root/.bashrc-zsh' in dockerfile
