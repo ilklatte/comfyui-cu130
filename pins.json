@@ -1,5 +1,7 @@
 {
   "base_image": "runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0",
+  "comfyui_version": "v0.37.4",
+  "python_version": "3.13",
   "docker_image": "coohh88/runpod-comfyui",
   "custom_nodes": [
     {"directory": "rgthree-comfy", "repository": "https://github.com/rgthree/rgthree-comfy.git", "commit": "2c5342a8cb0eaecaabf61435a5f37dd594c510ba"},

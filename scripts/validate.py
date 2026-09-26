@@ -13,11 +13,19 @@ tmux = (ROOT / "config/tmux.conf.local").read_text()
 circleci = (ROOT / ".circleci/config.yml").read_text()
 
 assert pins["base_image"] == EXPECTED_BASE
+assert pins["comfyui_version"] == "v0.37.4"
+assert pins["python_version"] == "3.13"
 assert pins["docker_image"] == EXPECTED_IMAGE
 assert len(pins["custom_nodes"]) == 13
 assert len({item["directory"] for item in pins["custom_nodes"]}) == 13
 assert all(re.fullmatch(r"[0-9a-f]{40}", item["commit"]) for item in pins["custom_nodes"])
 assert f"ARG BASE_IMAGE={EXPECTED_BASE}" in dockerfile
+assert "ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm" in dockerfile
+assert "ARG COMFYUI_VERSION=v0.37.4" in dockerfile
+assert "python3.13 -m pip install" in dockerfile
+assert '.venv-cu130-py313' in dockerfile
+assert "python3.13 -m venv" in dockerfile
+assert "BAKED_NODES=" in dockerfile and '"was-node-suite-comfyui"' in dockerfile
 assert "pip install --no-build-isolation cupy-cuda13x;" in dockerfile
 assert "pip install --no-build-isolation cupy-cuda12x;" not in dockerfile
 assert "PIP_CONSTRAINT=/opt/comfyui-runtime-constraints.txt" in dockerfile
@@ -31,7 +39,8 @@ assert "/workspace/.tmux" not in tmux
 zshrc = (ROOT / "config/zshrc").read_text()
 assert 'ow=01\\;34 tw=01\\;34' in zshrc
 assert "zstyle ':completion:*' list-colors" in zshrc
-assert "/workspace/runpod-slim/ComfyUI/.venv-cu130" in zshrc
+assert "/workspace/runpod-slim/ComfyUI/.venv-cu130-py313" in zshrc
+assert "/workspace/runpod-slim/ComfyUI/.venv-cu130\n" not in zshrc
 assert "/workspace/runpod-slim/ComfyUI/.venv-cu128" in zshrc
 assert 'source "$_runpod_venv/bin/activate"' in zshrc
 start_script = (ROOT / "scripts/custom-start.sh").read_text()

@@ -1,9 +1,20 @@
 # syntax=docker/dockerfile:1
+ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm
+FROM ${PYTHON_IMAGE} AS python313
+
 ARG BASE_IMAGE=runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0
 FROM ${BASE_IMAGE}
 
 ARG BASE_IMAGE
+ARG COMFYUI_VERSION=v0.37.4
 LABEL org.opencontainers.image.base.name=${BASE_IMAGE}
+LABEL org.opencontainers.image.version=${COMFYUI_VERSION}
+
+# Keep the RunPod service layer (SSH, Jupyter, FileBrowser and CUDA runtime),
+# but run ComfyUI itself with Python 3.13.  The copied /usr/local tree adds
+# python3.13 alongside the parent's python3.12 files, so the parent's Jupyter
+# entry points that explicitly use python3.12 continue to work.
+COPY --from=python313 /usr/local /usr/local
 
 ENV LANG=zh_CN.UTF-8 \
     LC_ALL=zh_CN.UTF-8 \
@@ -60,6 +71,31 @@ COPY pins.json /opt/custom-image-pins.json
 
 RUN printf '\n# Load the RunPod interactive-shell bridge.\nsource /root/.bashrc-zsh\n' >> /root/.bashrc
 
+# Replace only the image-managed ComfyUI core.  The parent image's bundled
+# custom nodes stay in place and user data is never part of /opt/comfyui-baked.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    set -eu; \
+    mkdir -p /tmp/comfyui-source; \
+    curl -fSL "https://github.com/Comfy-Org/ComfyUI/archive/refs/tags/${COMFYUI_VERSION}.tar.gz" \
+        -o /tmp/comfyui.tar.gz; \
+    tar -xzf /tmp/comfyui.tar.gz --strip-components=1 -C /tmp/comfyui-source; \
+    rsync -a --delete \
+        --exclude='custom_nodes/' \
+        --exclude='models/' \
+        --exclude='input/' \
+        --exclude='output/' \
+        --exclude='user/' \
+        /tmp/comfyui-source/ /opt/comfyui-baked/; \
+    python3.13 -m pip install --no-cache-dir --upgrade pip; \
+    python3.13 -m pip install --no-cache-dir --no-build-isolation \
+        -r /opt/comfyui-baked/requirements.txt; \
+    rm -rf /tmp/comfyui-source /tmp/comfyui.tar.gz; \
+    printf '%s\n' \
+        "COMFYUI_VERSION=${COMFYUI_VERSION}" \
+        "PYTHON_VERSION=3.13" \
+        "CUDA_VERSION=13.0" \
+        > /opt/comfyui-baked/.runpod-bundle-version
+
 RUN --mount=type=cache,target=/root/.cache/pip \
     python3 - <<'PY'
 import json
@@ -102,8 +138,35 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python3 -m pip install --no-build-isolation cupy-cuda13x; \
     python3 -m pip check; \
     python3 -c "import torch; assert torch.version.cuda and torch.version.cuda.startswith('13.'), torch.version.cuda"; \
-    printf '\nCUSTOM_IMAGE=coohh88/runpod-comfyui:cu130\n' >> /opt/comfyui-baked/.runpod-bundle-version; \
+    printf 'CUSTOM_IMAGE=coohh88/runpod-comfyui:cu130\n' >> /opt/comfyui-baked/.runpod-bundle-version; \
     rm -rf /tmp/custom-nodes
+
+# The upstream v1.3.2 launcher is tied to Python 3.12 and names both CUDA
+# variants .venv-cu128.  Point it at the isolated Python 3.13/CUDA 13 venv and
+# treat the old persistent venv as the migration source.
+RUN set -eu; \
+    sed -i \
+        -e 's|VENV_DIR="$COMFYUI_DIR/.venv-cu128"|VENV_DIR="$COMFYUI_DIR/.venv-cu130-py313"|' \
+        -e 's|OLD_VENV_DIR="$COMFYUI_DIR/.venv"|OLD_VENV_DIR="$COMFYUI_DIR/.venv-cu128"|' \
+        -e 's|^BAKED_NODES=.*|BAKED_NODES=("ComfyUI-Manager" "ComfyUI-KJNodes" "Civicomfy" "ComfyUI-RunpodDirect" "rgthree-comfy" "ComfyUI-Impact-Pack" "ComfyUI-VideoHelperSuite" "ComfyUI-Easy-Use" "comfyui_controlnet_aux" "ComfyUI-Custom-Scripts" "ComfyUI_essentials" "ComfyUI_LayerStyle" "ComfyUI-Frame-Interpolation" "ComfyUI-GGUF" "ComfyUI-segment-anything-2" "was-node-suite-comfyui")|' \
+        -e 's/python3\.12 -m venv/python3.13 -m venv/g' \
+        -e 's/\.venv-cu128\/bin\/activate/.venv-cu130-py313\/bin\/activate/g' \
+        /start.sh; \
+    grep -q 'VENV_DIR="$COMFYUI_DIR/.venv-cu130-py313"' /start.sh; \
+    grep -q '"was-node-suite-comfyui"' /start.sh; \
+    grep -q 'python3.13 -m venv' /start.sh; \
+    ! grep -q 'python3.12 -m venv' /start.sh; \
+    python3.13 - <<'PY'
+import sys
+import torch
+import torchaudio
+import torchvision
+
+assert sys.version_info[:2] == (3, 13), sys.version
+assert torch.version.cuda and torch.version.cuda.startswith("13."), torch.version.cuda
+print(sys.version)
+print(torch.__version__, torchvision.__version__, torchaudio.__version__, torch.version.cuda)
+PY
 
 COPY scripts/custom-start.sh /usr/local/bin/custom-start.sh
 RUN chmod +x /usr/local/bin/custom-start.sh \

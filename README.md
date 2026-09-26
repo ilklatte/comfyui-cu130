@@ -1,12 +1,14 @@
 # RunPod ComfyUI CUDA 13.0
 
-Custom RunPod image based on
-`runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0`. The published repository is
+Custom RunPod image that keeps the service layer from
+`runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0`, while replacing the ComfyUI
+runtime with ComfyUI `v0.37.4` on Python `3.13`. The published repository is
 `coohh88/runpod-comfyui` under CUDA-specific tags.
 
 ## Included environment
 
 - Chinese UTF-8 locale (`zh_CN.UTF-8`)
+- ComfyUI `v0.37.4`, Python `3.13` and the parent's CUDA 13.0 PyTorch stack
 - Zsh as root's login shell, Oh My Zsh, autosuggestions and syntax highlighting
 - Automatic Zsh login for interactive Bash terminals opened by RunPod or Jupyter
 - Automatic activation of the persistent ComfyUI venv in interactive terminals
@@ -20,6 +22,9 @@ ComfyUI keeps the upstream persistent layout at
 the container at `/root/.tmux/resurrect` and is not persisted in `/workspace`.
 When `FILEBROWSER_PASSWORD` is set, every pod start also synchronizes that
 value to the existing `/workspace/runpod-slim/filebrowser.db` admin account.
+The ComfyUI environment is `/workspace/runpod-slim/ComfyUI/.venv-cu130-py313`.
+On the first boot after upgrading this image, the old `.venv-cu128` environment
+is timestamped and moved aside before user-node dependencies are reinstalled.
 
 ## CircleCI setup
 
