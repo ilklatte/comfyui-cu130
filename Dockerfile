@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm
-FROM ${PYTHON_IMAGE} AS python313
-
 ARG BASE_IMAGE=runpod/comfyui:1.3.2-comfyuiv0.30.0-cuda13.0
+
+FROM ${PYTHON_IMAGE} AS python313
 FROM ${BASE_IMAGE}
 
 ARG BASE_IMAGE

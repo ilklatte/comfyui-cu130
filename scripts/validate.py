@@ -21,6 +21,9 @@ assert len({item["directory"] for item in pins["custom_nodes"]}) == 13
 assert all(re.fullmatch(r"[0-9a-f]{40}", item["commit"]) for item in pins["custom_nodes"])
 assert f"ARG BASE_IMAGE={EXPECTED_BASE}" in dockerfile
 assert "ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm" in dockerfile
+first_from = dockerfile.index("FROM ")
+assert dockerfile.index(f"ARG BASE_IMAGE={EXPECTED_BASE}") < first_from
+assert dockerfile.index("ARG PYTHON_IMAGE=python:3.13.7-slim-bookworm") < first_from
 assert "ARG COMFYUI_VERSION=v0.37.4" in dockerfile
 assert "python3.13 -m pip install" in dockerfile
 assert '.venv-cu130-py313' in dockerfile
